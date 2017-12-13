@@ -1,0 +1,2 @@
+# Algolia Search component
+
