@@ -2,6 +2,7 @@
   "name": "Algolia-challenge",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://mathewleland.github.io/algolia-search",
   "devDependencies": {
     "fs": "0.0.1-security",
     "jshint": "^2.9.5",
@@ -19,6 +20,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "npm run build&&gh-pages -d build"
   }
 }
