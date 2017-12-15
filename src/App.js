@@ -4,11 +4,11 @@ import algoliasearch from 'algoliasearch';
 import axios from 'axios';
 import algoliasearchHelper from 'algoliasearch-helper';
 import Restaurant from './Restaurant';
-// import onestar from './graphics/onestar.svg';
-// import twostar from './graphics/twostar.svg';
-// import threestar from './graphics/threestar.svg';
-// import fourstar from './graphics/fourstar.svg';
-// import fivestar from './graphics/fivestar.svg';
+import onestar from './graphics/onestar.svg';
+import twostar from './graphics/twostar.svg';
+import threestar from './graphics/threestar.svg';
+import fourstar from './graphics/fourstar.svg';
+import fivestar from './graphics/fivestar.svg';
 
 
 
@@ -29,7 +29,7 @@ class App extends Component {
       latitude: '',
       longitude: '',
       hits: [],
-      query: '',
+      query: 'steak',
       facets: []
       
     }
@@ -59,17 +59,29 @@ class App extends Component {
   
   componentDidMount() {
     this.getLocation();
-    this.performSearch('steak');
+    // this.performSearch('steak');
   };
 
   performSearch(query) {
     var client = algoliasearch("UGLA0G5HHX", "6c2adc457b7eb83c342856daa6cc8bb6");
-    var index = client.initIndex('OpenTableSearch');
+    // var index = client.initIndex('OpenTableSearch');
 
-    index.search(query, (err, content) => {
-      this.setState({ hits: content.hits });
-      console.log(content);
-    })
+    // index.search(query, (err, content) => {
+    //   this.setState({ hits: content.hits });
+    //   console.log(content);
+    // })
+
+    var helper = algoliasearchHelper(client, 'OpenTableSearch', {
+      facets: ['food_type', 'payment_options', 'stars_count']
+    });
+    
+    helper.on('result', function(data){
+      console.log('this');
+      // this.setState({ hits: data.hits })
+      // console.log(data.hits);
+    });
+    
+
   }
 
 
@@ -110,17 +122,39 @@ class App extends Component {
 
   render() {
 
-    let restaurantResults = this.state.hits.map(this.renderCard);
+    
 
-    var client = algoliasearch("UGLA0G5HHX", "6c2adc457b7eb83c342856daa6cc8bb6");
     // var index = client.initIndex('OpenTableSearch');
+    const appID = "UGLA0G5HHX";
+    const apiKey = "6c2adc457b7eb83c342856daa6cc8bb6";
+    var client = algoliasearch(appID, apiKey);
     var helper = algoliasearchHelper(client, "OpenTableSearch", {
-      facets: ['food_type']
+      facets: ['food_type'],
+      disjunctiveFacets: ['payment_options', 'stars_count']
     });
+    const component = this;
 
-    helper.on('results', function(content){
-      console.log(content)
+    //take clicks from state and add as refinements:
+    // helper.addDisjunctiveFacetRefinement('payment_options', 'AMEX');
+    // helper.addNumericRefinement('stars_count', '<', 3);
+  
+    helper.setQuery(this.state.query);
+    helper.search();
+    let restaurants;
+
+    helper.on('result', (content) => {
+      console.log(this);
+      // console.log(content);
+      restaurants = content.hits.map(this.renderCard);
+      // console.log(restaurants);
+      // console.log(restaurantResults);
+      // console.log(component);
     });
+    // console.log('now it is');
+    // console.log(restaurants);
+
+    // let restaurantResults = restaurants.map(this.renderCard);
+
     
     
     // console.log(client);
@@ -133,9 +167,16 @@ class App extends Component {
         </div>
 
         <div id='sidebar'>
+
+          <p>Rating</p>
+          <li onClick={() => { this.adjustRating(1) }}><img src={onestar} alt='One star' /></li>
+          <li onClick={() => { this.adjustRating(2) }}><img src={twostar} alt='Two star' /></li>
+          <li onClick={() => { this.adjustRating(3) }}><img src={threestar} alt='Three star' /></li>
+          <li onClick={() => { this.adjustRating(4) }}><img src={fourstar} alt='Four star' /></li>
+          <li onClick={() => { this.adjustRating(5) }}><img src={fivestar} alt='Five star' /></li>
         </div>
 
-        <div id='searchResults'> {restaurantResults}</div>
+        <div id='searchResults'> {restaurants}</div>
       </div>
     );
   }
