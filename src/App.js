@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import './App.css';
 import algoliasearch from 'algoliasearch';
 import axios from 'axios';
@@ -114,51 +115,49 @@ class App extends Component {
     return ( <Restaurant {...props} />)
   }
 
-
   renderFacetList(content) {
     console.log(content.getFacetValues('food_type'));
   }
 
-
   render() {
 
-    
-
-    // var index = client.initIndex('OpenTableSearch');
     const appID = "UGLA0G5HHX";
     const apiKey = "6c2adc457b7eb83c342856daa6cc8bb6";
     var client = algoliasearch(appID, apiKey);
+    var index = client.initIndex('OpenTableSearch');
+    
     var helper = algoliasearchHelper(client, "OpenTableSearch", {
       facets: ['food_type'],
       disjunctiveFacets: ['payment_options', 'stars_count']
     });
-    const component = this;
-
-    //take clicks from state and add as refinements:
+    
+    // take clicks from state and add as refinements:
     // helper.addDisjunctiveFacetRefinement('payment_options', 'AMEX');
+    // helper.addFacetRefinement('food_type', 'Asian');
     // helper.addNumericRefinement('stars_count', '<', 3);
   
     helper.setQuery(this.state.query);
     helper.search();
-    let restaurants;
 
     helper.on('result', (content) => {
-      console.log(this);
-      // console.log(content);
-      restaurants = content.hits.map(this.renderCard);
+
+      let facets = content.facets[0].data;
+      console.log(facets);
+      //this helper method is creating a closure that is preventing me from assigning variables to render outside of the helper function
+      //i normally don't use ReactDOM.render within a componen'ts render method, but it seemed like the only way right now
+
+      let restaurants = content.hits.map(this.renderCard);
+      ReactDOM.render(
+        restaurants,
+        document.getElementById('searchResults')
+      );
+      
       // console.log(restaurants);
       // console.log(restaurantResults);
       // console.log(component);
     });
-    // console.log('now it is');
-    // console.log(restaurants);
 
     // let restaurantResults = restaurants.map(this.renderCard);
-
-    
-    
-    // console.log(client);
-    // console.log(index);
     
     return (
       <div className="App">
@@ -176,7 +175,7 @@ class App extends Component {
           <li onClick={() => { this.adjustRating(5) }}><img src={fivestar} alt='Five star' /></li>
         </div>
 
-        <div id='searchResults'> {restaurants}</div>
+        <div id='searchResults'></div>
       </div>
     );
   }
