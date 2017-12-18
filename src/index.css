@@ -44,18 +44,39 @@ body {
 
 #sidebear p {
   font-size: 14px;
+  text-align: left;
 }
 
 #sidebar li {
   cursor: pointer;
   text-align: left;
-  margin-left: 35px;
+  margin-left: 15px;
+}
+
+.food-table {
+  width: 90%;
+  font-family: "Helvetica Neue";
+  font-size: 14px;
+  border-spacing: 0px;
+  margin-left: 10px;
+}
+
+.food-table tr:hover {
+  background-color: #1C688E;
+  color: white
+}
+
+.left {
+  text-align: left;
+}
+
+.right {
+  text-align: right;
 }
 
 .payment {
-  color: #1C688E;
-  font-weight: 900;
-  font-size: 18px;
+  /* font-weight: 900; */
+  font-size: 14px;
 }
 
 #searchResults {
@@ -90,6 +111,7 @@ body {
 .restaurant p {
   margin-top: 0px;
   font-size: 16px;
+  font-weight: 600;
   text-align: left;
 }
 
@@ -117,5 +139,14 @@ body {
   font-family: "Helvetica Neue";
   font-size: 14px;
   color: #707070;
+}
 
+.pagination {
+  border: 1px #a7a7a7 solid;
+  border-radius: 2px;
+  color: #707070;
+  font-size: 16px;
+  margin-top: 15px;
+  padding: 5px 50px;
+  font-family: "Helvetica Neue"
 }
