@@ -148,5 +148,13 @@ body {
   font-size: 16px;
   margin-top: 15px;
   padding: 5px 50px;
-  font-family: "Helvetica Neue"
+  font-family: "Helvetica Neue";
+  display: block;
+  text-align: center;
+  margin: 15px auto;
+}
+
+.reset {
+  color: red;
+  border: 1px red dashed;
 }
