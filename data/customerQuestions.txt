@@ -1,0 +1,39 @@
+Question 1: Hello,
+
+I'm new to search engines, and there are a lot of concepts I'm not educated on. To make my onboarding smoother, it'd help if you could provide me with some definitions of the following concepts:
+
+Records
+Indexing
+I'm also struggling with understanding what types of metrics would be useful to include in the "Custom Ranking."
+
+
+Cheers, George
+
+Hi George,
+
+Search engines can be a very intimidating thing, and I want to congratulate you on wanting to learn more!  We are tremendously fascinated with search at Algolia, and we would love to help you get a great idea of what goes into our searches.
+Indexing is the process of taking the database you have, and uploading it to the Algolia servers.  We offer you a couple ways of doing this, either through the dashboard on our website or through the terminal on our API client.
+In your index, each item is considered a record.  These records are what is searchable for your customers, and you get to decide exactly what are the most important attributes of a record are and can open those up to search queries from your customers.
+Algolia tries to make good guesses based on what your customers might be searching for, but the Custom Ranking gives you even more power to expand upon this.  You can decide which of your 'records' appear higher, whether it be based on geographical location of a customer, the popularity of an item, or just going with the relevancy of the text query -- and likely a combination of all of these and more!  Algolia strives to give your customers the best results in the shortest amount of time, making the interaction with your product as seamless as possible.
+
+Question 2: Hello,
+
+Sorry to give you the kind of feedback that I know you do not want to hear, but I really hate the new dashboard design. Clearing and deleting indexes are now several clicks away. I am needing to use these features while iterating, so this is inconvenient.
+
+Regards, Matt
+
+Hi Matt!
+
+Thank you so much for the feedback.  We put a lot of work into the new design of it, and it is very helpful to know what kinds of problems you're running into as we try to make it better and better.  Fortunately in this case, I think we already have built in a convenient solution for you right into the existing Algolia API.  I would love to point you to some of our documentation (https://www.algolia.com/doc/guides/indexing/updates-strategy/) that goes into how you can manage your indexes as you iterate.  We have tried to built in a lot of flexibility into Algolia so that you could delete or update your indexes as you go, even with partial update information!  Do you think that this should resolve the problem you're having with updating your indices with high frequency, or could I try to do some research for an even better solution for you?
+
+Question 3: Hi,
+
+I'm looking to integrate Algolia in my website. Will this be a lot of development work for me? What's the high level process look like?
+
+Regards, Leo
+
+Hi Leo,
+
+To get a very high level idea of what it would look like, take a look at this video we put together (https://www.youtube.com/watch?v=q_9mnYSZu0k) to help visualize what you can accomplish with Algolia.  At Algolia, we want to do the heavy lifting for you, so we have built a lot of easy to grasp tools like our instantsearch.js library to get you up and running fast with a search experience that is fast and intuitive, while being extremely feature-rich.  At Algolia, we focus on speed, and try to offer an as-you-type experience to help your customers find exactly what they are looking for.  This also brings us to our second cornerstone of Algolia search: the relevance of the results.  Algolia is very good at guessing what exactly your customers are looking for, but we also offer you to be able to customize the rankings based on what you think is most important to.  And best of all, all of these tools are incredibly easy to use with our built in dashboard at Algolia.com when you sign up for an account.
+Best of all, Algolia is agnostic to whatever front end libraries or framework you already have in place, so it is very easy to get started with Algolia and have it integrated into your current app!
+
