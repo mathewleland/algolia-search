@@ -63,7 +63,6 @@ class App extends Component {
   
   componentDidMount() {
     this.getLocation();
-    // this.performSearch('steak');
   };
 
 
@@ -131,11 +130,24 @@ class App extends Component {
 
   renderPagination() {
     return (
-      <button 
-        className='pagination' 
-        onClick={ ()=> { this.setState({ page: this.state.page +1 }) } } >
-        Show More 
-      </button>
+      <div>
+        <button 
+          className='pagination' 
+          onClick={ ()=> { this.setState({ page: this.state.page +1 }) } } >
+          Show More 
+        </button>
+        <button 
+          className='pagination reset'
+          onClick={ () => { this.setState({
+            query: '',
+            facet: null,
+            payment: null,
+            rating: 0,
+            page: 0
+          })}}>
+          Reset Search
+        </button>
+      </div>
     )
   }
 
@@ -156,6 +168,8 @@ class App extends Component {
     if (this.state.facet) helper.addFacetRefinement('food_type', this.state.facet);
   
     helper.setQuery(this.state.query);
+    const location = `${this.state.latitude}, ${this.state.longitude}`;
+    helper.setQueryParameter('aroundLatLng', location);
     helper.setPage(this.state.page);
     helper.search();
 
