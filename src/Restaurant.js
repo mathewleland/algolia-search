@@ -10,25 +10,11 @@ import fivestar from './graphics/fivestar.svg';
 class Restaurant extends React.Component {
 
 renderStars() {
-  // const goldStars = Math.floor(this.props.stars_count);
-  // const grayStars = 5 - goldStars;
-
-  // for (let i=0; i<goldStars; i++) {
-  //   // stars += `<li className='star'> <img src={gold} alt='rating' /></li>`;
-  // }
-
-  // for (let j=0; j< grayStars; j++) {
-  //   stars += `<li className='star'> <img src={gray} alt='rating' /></li>`;
-  // }
-
-  //very embarrassing here: couldn't get figure out how to use the gold and empty star imgaes and just wrap them in <li> tags, 
-  // so just used SVG images for the ratings
   const goldStars = Math.round(this.props.stars_count);
   const src = [onestar, twostar, threestar, fourstar, fivestar];
 
   return <img src={src[goldStars-1]} alt='rating'/>;
 }
-
 
 render() {
   let stars = this.renderStars();
