@@ -175,8 +175,8 @@ class App extends Component {
 
     helper.on('result', (content) => {
 
-      //this helper method is creating a closure that is preventing me from assigning variables to render outside of the helper function
-      //i normally don't use ReactDOM.render within a componen'ts render method, but it seemed like the only way right now
+      // this helper method is creating a closure that is preventing me from assigning variables to render outside of the helper function
+      // i normally don't use ReactDOM.render within a componen'ts render method, but it seemed like the only way right now
 
       const facets = content.getFacetValues('food_type');
       ReactDOM.render(
