@@ -19,19 +19,22 @@ class App extends Component {
     super()
 
     this.getLocation = this.getLocation.bind(this);
-    // this.renderHits = this.renderHits.bind(this);
     this.renderFacetList = this.renderFacetList.bind(this);
-    this.performSearch = this.performSearch.bind(this);
+    // this.performSearch = this.performSearch.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.adjustRating = this.adjustRating.bind(this);
     this.restrictPayment = this.restrictPayment.bind(this);
+    this.renderPagination = this.renderPagination.bind(this);
 
     this.state = {
       latitude: '',
       longitude: '',
       hits: [],
       query: 'steak',
-      facets: []
+      facet: null,
+      rating: 0,
+      payment: null,
+      page: 0
       
     }
   }
@@ -63,28 +66,6 @@ class App extends Component {
     // this.performSearch('steak');
   };
 
-  performSearch(query) {
-    var client = algoliasearch("UGLA0G5HHX", "6c2adc457b7eb83c342856daa6cc8bb6");
-    // var index = client.initIndex('OpenTableSearch');
-
-    // index.search(query, (err, content) => {
-    //   this.setState({ hits: content.hits });
-    //   console.log(content);
-    // })
-
-    var helper = algoliasearchHelper(client, 'OpenTableSearch', {
-      facets: ['food_type', 'payment_options', 'stars_count']
-    });
-    
-    helper.on('result', function(data){
-      console.log('this');
-      // this.setState({ hits: data.hits })
-      // console.log(data.hits);
-    });
-    
-
-  }
-
 
   adjustRating(val) {
     this.setState({ rating: val});
@@ -95,8 +76,13 @@ class App extends Component {
   }
 
   handleChange(e) {
-    this.setState({ query: e.target.value });
-    this.performSearch(this.state.query);
+    this.setState({ 
+      query: e.target.value,
+      facet: null,
+      rating: 0,
+      payment: null
+
+    });
   }
 
   renderCard(r) {
@@ -115,49 +101,83 @@ class App extends Component {
     return ( <Restaurant {...props} />)
   }
 
-  renderFacetList(content) {
-    console.log(content.getFacetValues('food_type'));
+  renderFacetList(facets) {
+    facets = facets.slice(0,6);
+
+    return (
+      <div>
+        <p> Cuisine / Food Type</p>
+        <table className='descText food-table'>
+          <tbody>
+            {
+              facets.map( (facet) => {
+                return ( 
+                  <tr onClick={ () => this.setState({ facet: `${facet.name}`})} key={facet.name}>
+                    <td className='left'>{facet.name}</td>  
+                    <td className='right'>{facet.count}</td> 
+                  </tr> 
+                )
+              }
+              )
+            }
+          </tbody>
+          
+        </table>
+      </div>
+      
+      )
+
+  }
+
+  renderPagination() {
+    return (
+      <button 
+        className='pagination' 
+        onClick={ ()=> { this.setState({ page: this.state.page +1 }) } } >
+        Show More 
+      </button>
+    )
   }
 
   render() {
 
     const appID = "UGLA0G5HHX";
     const apiKey = "6c2adc457b7eb83c342856daa6cc8bb6";
-    var client = algoliasearch(appID, apiKey);
-    var index = client.initIndex('OpenTableSearch');
+    const client = algoliasearch(appID, apiKey);
     
-    var helper = algoliasearchHelper(client, "OpenTableSearch", {
+    const helper = algoliasearchHelper(client, "OpenTableSearch", {
       facets: ['food_type'],
       disjunctiveFacets: ['payment_options', 'stars_count']
     });
-    
-    // take clicks from state and add as refinements:
-    // helper.addDisjunctiveFacetRefinement('payment_options', 'AMEX');
-    // helper.addFacetRefinement('food_type', 'Asian');
-    // helper.addNumericRefinement('stars_count', '<', 3);
+
+    // Add in the Filters on sidebar
+    helper.addNumericRefinement('stars_count', '>=', this.state.rating);
+    if (this.state.payment) helper.addDisjunctiveFacetRefinement('payment_options', this.state.payment);
+    if (this.state.facet) helper.addFacetRefinement('food_type', this.state.facet);
   
     helper.setQuery(this.state.query);
+    helper.setPage(this.state.page);
     helper.search();
 
     helper.on('result', (content) => {
 
-      let facets = content.facets[0].data;
-      console.log(facets);
       //this helper method is creating a closure that is preventing me from assigning variables to render outside of the helper function
       //i normally don't use ReactDOM.render within a componen'ts render method, but it seemed like the only way right now
 
-      let restaurants = content.hits.map(this.renderCard);
+      const facets = content.getFacetValues('food_type');
+      ReactDOM.render(
+        this.renderFacetList(facets),
+        document.getElementById('foodFacets')
+      )
+
+      const restaurants = content.hits.map(this.renderCard);
       ReactDOM.render(
         restaurants,
         document.getElementById('searchResults')
       );
       
-      // console.log(restaurants);
-      // console.log(restaurantResults);
-      // console.log(component);
     });
 
-    // let restaurantResults = restaurants.map(this.renderCard);
     
     return (
       <div className="App">
@@ -166,6 +186,8 @@ class App extends Component {
         </div>
 
         <div id='sidebar'>
+          
+          <div id='foodFacets'></div>
 
           <p>Rating</p>
           <li onClick={() => { this.adjustRating(1) }}><img src={onestar} alt='One star' /></li>
@@ -173,9 +195,20 @@ class App extends Component {
           <li onClick={() => { this.adjustRating(3) }}><img src={threestar} alt='Three star' /></li>
           <li onClick={() => { this.adjustRating(4) }}><img src={fourstar} alt='Four star' /></li>
           <li onClick={() => { this.adjustRating(5) }}><img src={fivestar} alt='Five star' /></li>
+
+          <p>Payment Options</p>
+          <li className='descText' onClick={() => {this.restrictPayment("Visa")}}>VISA</li>
+          <li className='descText' onClick={() => {this.restrictPayment("MasterCard")}}>MasterCard</li>
+          <li className='descText' onClick={() => {this.restrictPayment("AMEX")}}>AMEX</li>
+          <li className='descText' onClick={() => {this.restrictPayment("Discover")}}>Discover</li>
+        
         </div>
 
         <div id='searchResults'></div>
+        
+        {this.renderPagination()}
+
+        
       </div>
     );
   }
