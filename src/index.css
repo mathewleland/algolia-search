@@ -27,6 +27,8 @@ body {
   height: 40px;
   margin: 20px auto 0 auto;
   font-size: 15px;
+  background: url('./graphics/search-by-algolia.png') right no-repeat white;
+  background-size: 150px 20px;
 
 
 }
